@@ -39,4 +39,3 @@ const ServicesList = () => {
 }
 
 export default ServicesList
-3

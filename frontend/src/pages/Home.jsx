@@ -71,7 +71,7 @@ const Home = () => {
             <Col lg='12' className='mb-5'>
               
                 <Subtitle subtitle={'Explore'} />
-                <h2 className='featured__tour-title'>We offer our best services</h2>
+                <h2 className='featured__tour-title'>Featured Tours</h2>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, ex.</p>
             </Col>
             <FeaturedTourList />
@@ -79,6 +79,55 @@ const Home = () => {
         </Container>
     </section>
     {/* ====== Features Section Ends====== */}
+
+
+
+    {/* ====== Experience Section Starts====== */}
+
+    <section>
+      <Container>
+        <Row>
+          <Col lg='6'>
+            <div className='experience_content'>
+              <Subtitle subtitle={'Experience the Adventure'} />
+
+              <h2>With our all experience <br /> we will serve you</h2>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, ex.</p>
+              <br />
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, ex.</p>
+
+            </div>
+
+            <div className='counter_wrapper d-flex align-items-center gap-5'>
+              <div className='counter_box'>
+                <span>12k+</span>
+                <h6>Successful Trips</h6>
+              </div>
+              <div className='counter_box'>
+                <span>12k+</span>
+                <h6>Regular Clients</h6>
+              </div>
+              <div className='counter_box'>
+                <span>12</span>
+                <h6>Years of Experience</h6>
+              </div>
+            </div>
+
+          </Col>
+          <Col lg='6'></Col>
+        </Row>
+      </Container>
+    </section>
+
+
+
+
+
+
+    {/* ====== Experience Section Ends====== */}
+
+
+
   </>
 }
 

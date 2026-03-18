@@ -64,3 +64,45 @@
     font-size: 2.3rem;
     font-weight: 500;
 }
+
+.experience-content h2
+{
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.experience-content p
+{
+    font-size: 1.1rem;
+    color: var(--text-color);
+    line-height: 2rem;
+}
+
+.counter_wrapper
+{
+   
+    margin-top: 2.5rem;
+}
+
+.counter_box span
+{
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-radius: 10px 5px 10px 5px;
+}
+
+.counter_box h6 
+{
+    font-size: 1.1rem;
+    margin-top: 0.7rem;
+    color: var(--text-color);
+}
