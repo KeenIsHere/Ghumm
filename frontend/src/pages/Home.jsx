@@ -6,11 +6,14 @@ import heroImg from '../assets/images/hero-img01.jpg'
 import heroImg02 from '../assets/images/hero-img02.jpg'
 import heroVideo from '../assets/images/hero-video.mp4'
 import worldImg from '../assets/images/world.png'
+import experienceImg from '../assets/images/experience.png'
+
 import Subtitle from '../shared/subtitle.jsx'
 
 import SearchBar from '../shared/SearchBar'
 import ServicesList from '../services/ServicesList'
 import FeaturedTourList from '../components/Featured-tours/FeaturedTourList'
+import MasonryImagesGallery from '../components/Image-gallery/MasonryImagesGallery.jsx'
 
 const Home = () => {
   return <>
@@ -114,17 +117,43 @@ const Home = () => {
             </div>
 
           </Col>
-          <Col lg='6'></Col>
+          <Col lg='6'>
+          <div>
+            <div className="experience_img">
+              <img src={experienceImg} alt="" />
+            </div>
+          </div>
+          </Col>
         </Row>
       </Container>
     </section>
 
-
-
-
-
-
     {/* ====== Experience Section Ends====== */}
+
+    {/* ====== gallery Section Ends====== */}
+
+      <section>
+        <Container>
+          <Row>
+              <Col lg='12'>
+              
+                <Subtitle subtitle={'Gallery'} />
+                <h2 className='gallery_title'>
+                  Visit our customers tour gallery
+                </h2>
+              </Col>
+              <Col lg = '12'>
+              <MasonryImagesGallery/>
+              </Col>
+          </Row>
+        </Container>
+      </section>
+
+
+
+
+
+    {/* ====== gallery Section Ends====== */}
 
 
 
