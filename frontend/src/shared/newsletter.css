@@ -1,0 +1,45 @@
+.newsletter
+{
+    background-color: #cae5f4;
+    padding: 0;
+    margin-top: 3rem;
+}
+
+.newsletter_img 
+{
+    width: 100%;
+}
+
+.newsletter__content 
+{
+    padding: 50px 0;
+}
+
+.newsletter__content h2
+{
+   font-size: 2.5rem;
+   margin-bottom: 2rem;
+}
+
+.newsletter__input 
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 0.5rem;
+    margin-bottom: 2rem;
+    border-radius: 5px;  
+}
+
+.newsletter__input
+{
+    border: none;
+    font-size: 1rem;
+    color: var(--heading-color);
+}
+
+.newsletter__input input:focus 
+{
+  outline: none;
+}

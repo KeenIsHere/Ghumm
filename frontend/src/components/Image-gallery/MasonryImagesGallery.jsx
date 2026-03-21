@@ -8,6 +8,8 @@ const MasonryImagesGallery = ({ data }) => {
       <Masonry gutter="1rem">
         {galleryImages.map((item, index) => (
           <img 
+          className="masonry_img"
+
           key={index}
           src={item} 
           alt= ""
