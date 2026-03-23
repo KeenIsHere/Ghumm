@@ -81,16 +81,6 @@ Build a reliable and user-friendly travel platform where people can:
 | Auth flow | ⚠️ UI-level | Login/Register pages exist; full auth backend flow may be incomplete |
 | Testing coverage | ⚠️ Basic | Default CRA testing setup present |
 | Deployment readiness | ⚠️ Partial | Build works for frontend; full-stack deployment path still needs completion |
-
----
-
-## What Works Today
-
-- Responsive React frontend
-- Tour exploration interfaces
-- Reusable component structure
-- Build/test scripts for frontend
-
 ---
 
 ## Known Gaps / Risks
