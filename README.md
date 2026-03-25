@@ -94,9 +94,7 @@ Build a reliable and user-friendly travel platform where people can:
 
 ## Local Development Setup
 
-## Prerequisites
-- Node.js (LTS recommended)
-- npm
+
 
 ## Run frontend
 ```bash
