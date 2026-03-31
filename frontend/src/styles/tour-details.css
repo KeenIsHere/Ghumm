@@ -8,7 +8,7 @@
 .tour__info, .tour__reviews
 {
     border-radius: 0.5rem;
-    border: 1px solid rgb(229, 231, 235);
+    border: 3px solid rgb(229, 231, 235);
     padding: 2rem;
 }
 
@@ -68,7 +68,7 @@
     margin-bottom: 3rem;
 }
 
-.tour__input
+.review__input
 {
     display: flex;
     align-items: center;
@@ -107,7 +107,7 @@
     object-fit: cover;
 }
 
-.user__review
+.user__reviews
 {
     margin-top: 2.5rem;
 }
@@ -120,7 +120,13 @@
 
 .review__item p
 {
-    font-size: .9rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.review__item h6
+{
+    font-size: 1.1rem;
     color: var(--text-color);
 }
 
