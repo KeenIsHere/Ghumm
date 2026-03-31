@@ -5,7 +5,7 @@ import {Col, Form, FormGroup} from 'reactstrap'
 
 
 
-const SearchBar = () => {
+const SearchBar = ({ allTours, setFilteredTours }) => {
 
     const locationRef = useRef('');
     const distanceRef = useRef('');
@@ -19,6 +19,18 @@ const SearchBar = () => {
         if(location === '' || distance === '' || maxGroupSize === '') {
             return alert('All fields are required!');
         }
+
+        // Filter tours based on search criteria
+        const filtered = allTours.filter((tour) => {
+            const matchLocation = tour.city.toLowerCase().includes(location.toLowerCase()) || 
+                                 tour.title.toLowerCase().includes(location.toLowerCase());
+            const matchDistance = tour.distance >= parseInt(distance);
+            const matchGroupSize = tour.maxGroupSize >= parseInt(maxGroupSize);
+            
+            return matchLocation && matchDistance && matchGroupSize;
+        });
+
+        setFilteredTours(filtered);
     }
 
 
