@@ -1,0 +1,38 @@
+﻿# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+mongodb/
+mongodb-data/
+mongod_*.txt
+*.log
+
+# Build/Dist
+dist/
+build/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# Misc
+.cache/
+*.tmp
+do-not-publish/
