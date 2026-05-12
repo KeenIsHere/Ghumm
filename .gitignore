@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+mongodb/
+mongodb-data/
+.env
+.env.local
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+.bat/
+.txt/
