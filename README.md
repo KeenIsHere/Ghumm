@@ -2,6 +2,9 @@
 
 A full-stack web application for browsing, booking, and managing travel packages in Nepal. Built as a Final Year Project using the MERN stack.
 
+
+<img width="1912" height="1037" alt="image" src="https://github.com/user-attachments/assets/a637d455-a824-4064-961e-9844db6e6bfc" />
+
 ## Features
 
 - User registration and login with email OTP verification
@@ -14,6 +17,9 @@ A full-stack web application for browsing, booking, and managing travel packages
 - Notifications for booking updates
 - Admin dashboard for managing users, packages, bookings, and payments
 
+<img width="1919" height="1081" alt="image" src="https://github.com/user-attachments/assets/10263f61-ce9d-4978-a6dd-dbe541cf0b5a" />
+
+
 ## Tech Stack
 
 **Frontend:** React.js, Redux Toolkit, Tailwind CSS, Vite  
@@ -21,6 +27,9 @@ A full-stack web application for browsing, booking, and managing travel packages
 **Database:** MongoDB, Mongoose  
 **Email:** Brevo (SMTP)  
 **Payment:** eSewa
+
+<img width="1918" height="1086" alt="image" src="https://github.com/user-attachments/assets/edb9ca67-b6e6-42fe-94b9-b6c1481cbd45" />
+
 
 ## Project Structure
 
@@ -31,6 +40,9 @@ travelapp/
 ├── Scripts/        # Database and server startup scripts
 └── README.md
 ```
+
+<img width="1919" height="1077" alt="image" src="https://github.com/user-attachments/assets/9511768a-5212-42b1-ade1-ceed7f74b151" />
+
 
 ## Getting Started
 
@@ -53,6 +65,9 @@ travelapp/
    npm install
    ```
 4. Create a `.env` file in `server/` based on `.env.example`
+
+<img width="1918" height="1090" alt="image" src="https://github.com/user-attachments/assets/6f0eb607-4d3a-4de0-ab9c-767d59c0f838" />
+
 
 ### Running the App
 
