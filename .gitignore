@@ -7,6 +7,8 @@ mongodb/
 mongodb-data/
 .env
 .env.local
+.env
+/server/.env
 *.swp
 *.swo
 *~
