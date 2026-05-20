@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { auth, adminOnly } = require('../middleware/auth');
+const { getHomeSlider, updateHomeSlider } = require('../controllers/siteController');
 const {
   getDashboard, getAllUsers, updateUserRole, deleteUser,
   getAllBookings, updateBookingStatus,
@@ -18,5 +19,7 @@ router.put('/bookings/:id/status', updateBookingStatus);
 router.get('/payments', getAllPayments);
 router.get('/reviews', getAllReviews);
 router.get('/reports', getReports);
+router.get('/home-slider', getHomeSlider);
+router.put('/home-slider', updateHomeSlider);
 
 module.exports = router;

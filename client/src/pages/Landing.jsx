@@ -1,15 +1,96 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiMapPin, FiShield, FiCreditCard, FiStar } from 'react-icons/fi';
+import { useSelector } from 'react-redux';
+import { FiChevronLeft, FiChevronRight, FiMapPin, FiShield, FiCreditCard, FiStar } from 'react-icons/fi';
+import API from '../api/axios';
+
+const DEFAULT_HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1617633784633-97c2722e0aa5?q=80&w=1170',
+  'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1200',
+  'https://images.unsplash.com/photo-1486911278844-a81c5267e227?w=1200',
+];
 
 export default function Landing() {
+  const { user } = useSelector((state) => state.auth);
+  const [heroImages, setHeroImages] = useState(DEFAULT_HERO_IMAGES);
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadHeroImages = async () => {
+      try {
+        const { data } = await API.get('/site/home-slider');
+        const images = (data.images || []).map((item) => item.url).filter(Boolean);
+
+        if (mounted && images.length > 0) {
+          setHeroImages(images);
+          setActiveHeroIndex(0);
+        }
+      } catch (err) {
+        if (mounted) {
+          setHeroImages(DEFAULT_HERO_IMAGES);
+        }
+      }
+    };
+
+    loadHeroImages();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return undefined;
+
+    const timer = setInterval(() => {
+      setActiveHeroIndex((currentIndex) => (currentIndex + 1) % heroImages.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
+  const goToPreviousHero = () => {
+    setActiveHeroIndex((currentIndex) => (currentIndex - 1 + heroImages.length) % heroImages.length);
+  };
+
+  const goToNextHero = () => {
+    setActiveHeroIndex((currentIndex) => (currentIndex + 1) % heroImages.length);
+  };
+
   return (
     <div>
       {/* Hero Section */}
-      <section
-        className="relative h-[85vh] flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1617633784633-97c2722e0aa5?q=80&w=1170')" }}
-      >
+      <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+        <img
+          src={heroImages[activeHeroIndex]}
+          alt="Hero background"
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+        />
         <div className="absolute inset-0 bg-black/50"></div>
+
+        {heroImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={goToPreviousHero}
+              aria-label="Previous hero image"
+              className="absolute left-4 z-20 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 transition"
+            >
+              <FiChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              type="button"
+              onClick={goToNextHero}
+              aria-label="Next hero image"
+              className="absolute right-4 z-20 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 transition"
+            >
+              <FiChevronRight className="h-6 w-6" />
+            </button>
+          </>
+        )}
+
         <div className="relative z-10 text-center text-white px-4 max-w-3xl">
           <h1 className="text-5xl md:text-6xl font-bold mb-4">
             Discover the Beauty of <span className="text-primary-400">Pokhara</span>
@@ -26,6 +107,20 @@ export default function Landing() {
             </Link>
           </div>
         </div>
+
+        {heroImages.length > 1 && (
+          <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={`Go to hero image ${index + 1}`}
+                onClick={() => setActiveHeroIndex(index)}
+                className={`h-2.5 rounded-full transition-all ${index === activeHeroIndex ? 'w-8 bg-white' : 'w-2.5 bg-white/60'}`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Features */}
@@ -84,8 +179,11 @@ export default function Landing() {
           <p className="text-lg mb-8 text-primary-100">
             Join thousands of trekkers who trust GhummGhamm for planning their perfect mountain escape.
           </p>
-          <Link to="/register" className="px-8 py-3 bg-white text-primary-700 rounded-xl text-lg font-bold hover:bg-gray-100 transition">
-            Create Free Account
+          <Link
+            to={user ? '/packages' : '/register'}
+            className="px-8 py-3 bg-white text-primary-700 rounded-xl text-lg font-bold hover:bg-gray-100 transition"
+          >
+            {user ? 'Explore Packages' : 'Create Free Account'}
           </Link>
         </div>
       </section>

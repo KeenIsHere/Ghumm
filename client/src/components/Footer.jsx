@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function Footer() {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <footer className="bg-gray-900 text-gray-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -12,15 +15,25 @@ export default function Footer() {
           <h4 className="font-semibold text-white mb-3">Quick Links</h4>
           <ul className="space-y-2 text-sm">
             <li><Link to="/packages" className="hover:text-white">Explore Packages</Link></li>
-            <li><Link to="/register" className="hover:text-white">Register</Link></li>
-            <li><Link to="/login" className="hover:text-white">Login</Link></li>
+            {user ? (
+              <>
+                <li><Link to="/my-bookings" className="hover:text-white">My Bookings</Link></li>
+                <li><Link to="/profile" className="hover:text-white">Profile</Link></li>
+              </>
+            ) : (
+              <>
+                <li><Link to="/register" className="hover:text-white">Register</Link></li>
+                <li><Link to="/login" className="hover:text-white">Login</Link></li>
+              </>
+            )}
           </ul>
         </div>
         <div>
           <h4 className="font-semibold text-white mb-3">Support</h4>
           <ul className="space-y-2 text-sm">
+            <li>Author: Krishna Kumar Gupta</li>
             <li>Email: info@ghummghamm.com</li>
-            <li>Phone: +977-61-123456</li>
+            <li>Phone: +977 9816143699</li>
             <li>Pokhara, Nepal</li>
           </ul>
         </div>

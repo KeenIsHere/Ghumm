@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import API from '../api/axios';
 import toast from 'react-hot-toast';
@@ -7,6 +7,7 @@ import { FiCheck, FiClock, FiAlertCircle } from 'react-icons/fi';
 
 export default function Premium() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const [tiers, setTiers] = useState([]);
   const [selectedTier, setSelectedTier] = useState(null);
@@ -17,6 +18,30 @@ export default function Premium() {
   const [userRequests, setUserRequests] = useState([]);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tierParam = params.get('tier');
+    const billingParam = params.get('billing');
+    const shouldOpen = params.get('open') === 'request';
+
+    if (billingParam === 'monthly' || billingParam === 'annual') {
+      setBillingCycle(billingParam);
+    }
+
+    if (tierParam && tiers.length > 0) {
+      const matchedTier = tiers.find((tier) => tier.name === tierParam);
+      if (matchedTier) {
+        setSelectedTier(matchedTier);
+        if (billingParam === 'monthly' || billingParam === 'annual') {
+          setBillingCycle(billingParam);
+        }
+        if (shouldOpen) {
+          setShowRequestModal(true);
+        }
+      }
+    }
+  }, [location.search, tiers]);
 
   useEffect(() => {
     fetchTiers();
@@ -263,7 +288,7 @@ export default function Premium() {
                           }`
                     }`}
                   >
-                    {userSubscription && userSubscription.tierName === tier.name
+                      {userSubscription && userSubscription.tierName === tier.name
                       ? 'Current Plan'
                       : requestStatus?.status === 'approved'
                       ? '💳 Proceed to Payment'

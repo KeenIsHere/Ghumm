@@ -39,7 +39,9 @@ export default function MyBookings() {
   const removeFromWishlist = async (packageId) => {
     try {
       await API.post('/wishlist/remove', { packageId });
-      setWishlist(wishlist.filter(w => w.packageId._id !== packageId));
+      setWishlist((current) =>
+        current.filter((entry) => entry?.packageId?._id !== packageId)
+      );
       toast.success('Removed from wishlist');
     } catch (err) {
       toast.error('Failed to remove from wishlist');
@@ -231,37 +233,47 @@ export default function MyBookings() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {wishlist.map((item) => (
-                <div key={item._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
-                  <div className="relative">
-                    <img
-                      src={item.packageId?.coverImage || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400'}
-                      alt={item.packageId?.title}
-                      className="w-full h-40 object-cover"
-                    />
-                    <button
-                      onClick={() => removeFromWishlist(item.packageId._id)}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"
-                    >
-                      <FiHeart className="w-5 h-5 fill-current" />
-                    </button>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg">{item.packageId?.title}</h3>
-                    <p className="text-sm text-gray-500 mb-2">{item.packageId?.location}</p>
-                    <div className="flex justify-between items-center text-sm mb-3">
-                      <span className="text-gray-600">{item.packageId?.duration} days</span>
-                      <span className="font-semibold text-primary-600">Rs. {item.packageId?.price?.toLocaleString()}</span>
+              {wishlist.map((item) => {
+                const packageId = item.packageId?._id;
+                const packageTitle = item.packageId?.title || 'Package no longer available';
+                const packageLocation = item.packageId?.location || 'Unavailable';
+                const packageImage = item.packageId?.coverImage || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400';
+                const canBook = Boolean(packageId);
+
+                return (
+                  <div key={item._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+                    <div className="relative">
+                      <img
+                        src={packageImage}
+                        alt={packageTitle}
+                        className="w-full h-40 object-cover"
+                      />
+                      <button
+                        onClick={() => packageId && removeFromWishlist(packageId)}
+                        disabled={!packageId}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <FiHeart className="w-5 h-5 fill-current" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handleBookNow(item.packageId._id)}
-                      className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
-                    >
-                      Book Now
-                    </button>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg">{packageTitle}</h3>
+                      <p className="text-sm text-gray-500 mb-2">{packageLocation}</p>
+                      <div className="flex justify-between items-center text-sm mb-3">
+                        <span className="text-gray-600">{item.packageId?.duration || '--'} days</span>
+                        <span className="font-semibold text-primary-600">Rs. {item.packageId?.price?.toLocaleString() || '--'}</span>
+                      </div>
+                      <button
+                        onClick={() => canBook && handleBookNow(packageId)}
+                        disabled={!canBook}
+                        className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {canBook ? 'Book Now' : 'Package unavailable'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </>

@@ -35,6 +35,8 @@ export default function Profile() {
   const [premiumData, setPremiumData] = useState(null);
   const [rewards, setRewards] = useState(null);
   const [loadingPremium, setLoadingPremium] = useState(false);
+  const [homeSliderImages, setHomeSliderImages] = useState([]);
+  const [homeSliderUploading, setHomeSliderUploading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -55,8 +57,21 @@ export default function Profile() {
       if (user.isPremium) {
         fetchPremiumData();
       }
+
+      if (user.role === 'admin') {
+        fetchHomeSliderImages();
+      }
     }
   }, [user]);
+
+  const fetchHomeSliderImages = async () => {
+    try {
+      const { data } = await API.get('/site/home-slider');
+      setHomeSliderImages(data.images || []);
+    } catch (err) {
+      console.error('Failed to fetch homepage slider images:', err);
+    }
+  };
 
   const fetchPremiumData = async () => {
     setLoadingPremium(true);
@@ -76,6 +91,46 @@ export default function Profile() {
       console.error('Failed to fetch premium data:', err);
     } finally {
       setLoadingPremium(false);
+    }
+  };
+
+  const handleRenewMembership = () => {
+    const tierName = premiumData?.tierName || user?.premiumTier || '';
+    const billingCycle = premiumData?.billingCycle || user?.billingCycle || 'monthly';
+    const params = new URLSearchParams();
+
+    if (tierName) params.set('tier', tierName);
+    if (billingCycle) params.set('billing', billingCycle);
+    params.set('open', 'request');
+
+    navigate(`/premium?${params.toString()}`);
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!window.confirm('Cancel your premium subscription?')) return;
+
+    try {
+      const { data } = await API.post('/premium/cancel', {
+        reason: 'Cancelled from profile page'
+      });
+
+      if (data.success) {
+        const updatedUser = {
+          ...user,
+          isPremium: false,
+          premiumTier: null,
+          premiumExpiry: null,
+          subscriptionId: null,
+          billingCycle: null,
+          nextBillingDate: null,
+        };
+
+        dispatch(setUser(updatedUser));
+        setPremiumData(null);
+        toast.success('Subscription cancelled');
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to cancel subscription');
     }
   };
 
@@ -109,6 +164,67 @@ export default function Profile() {
       toast.success('Profile picture updated');
     } catch (err) {
       toast.error('Failed to upload picture');
+    }
+  };
+
+  const readFilesAsBase64 = async (files) => {
+    const readers = Array.from(files).map((file) => new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) {
+        reject(new Error('Please select only image files'));
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        reject(new Error(`Image ${file.name} must be less than 5MB`));
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target?.result);
+      reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
+      reader.readAsDataURL(file);
+    }));
+
+    return Promise.all(readers);
+  };
+
+  const handleHomeSliderUpload = async (e) => {
+    const files = e.target.files;
+    if (!files?.length) return;
+
+    setHomeSliderUploading(true);
+    try {
+      const base64Images = await readFilesAsBase64(files);
+      const nextImages = base64Images.map((url, index) => ({ url, order: homeSliderImages.length + index }));
+      const updatedImages = [...homeSliderImages, ...nextImages];
+
+      setHomeSliderImages(updatedImages);
+
+      const { data } = await API.put('/admin/home-slider', { images: updatedImages });
+      setHomeSliderImages(data.images || updatedImages);
+      toast.success('Homepage slider images updated');
+    } catch (err) {
+      toast.error(err.message || 'Failed to upload homepage slider images');
+    } finally {
+      setHomeSliderUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleRemoveHomeSliderImage = async (removeIndex) => {
+    const updatedImages = homeSliderImages
+      .filter((_, index) => index !== removeIndex)
+      .map((image, index) => ({ ...image, order: index }));
+
+    setHomeSliderImages(updatedImages);
+
+    try {
+      const { data } = await API.put('/admin/home-slider', { images: updatedImages });
+      setHomeSliderImages(data.images || updatedImages);
+      toast.success('Image removed from homepage slider');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to remove slider image');
+      fetchHomeSliderImages();
     }
   };
 
@@ -449,6 +565,44 @@ export default function Profile() {
                 >
                   Save Preferences
                 </button>
+
+                {user.role === 'admin' && (
+                  <div className="mt-8 border-t pt-6 space-y-4">
+                    <div>
+                      <h3 className="text-lg font-bold mb-2">Home Page Background Slider</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Upload images here and they will rotate on the home page every 3 seconds.
+                      </p>
+                      <label className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 cursor-pointer">
+                        <FiUpload />
+                        {homeSliderUploading ? 'Uploading...' : 'Upload Images'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleHomeSliderUpload}
+                          className="hidden"
+                          disabled={homeSliderUploading}
+                        />
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {homeSliderImages.map((image, index) => (
+                        <div key={`${image.url}-${index}`} className="relative overflow-hidden rounded-xl border bg-gray-50">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveHomeSliderImage(index)}
+                            className="absolute right-2 top-2 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-semibold text-white hover:bg-black/75"
+                          >
+                            Remove
+                          </button>
+                          <img src={image.url} alt={`Slider ${index + 1}`} className="h-28 w-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -580,10 +734,18 @@ export default function Profile() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700">
+                      <button
+                        type="button"
+                        onClick={handleRenewMembership}
+                        className="px-4 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700"
+                      >
                         Renew Membership
                       </button>
-                      <button className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">
+                      <button
+                        type="button"
+                        onClick={handleCancelSubscription}
+                        className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+                      >
                         Cancel Subscription
                       </button>
                     </div>
